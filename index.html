@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Application</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .quiz-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+      }
+      .question {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+      }
+      .options {
+        list-style-type: none;
+        padding: 0;
+      }
+      .options li {
+        margin: 10px 0;
+      }
+      button {
+        padding: 10px 15px;
+        margin-top: 20px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        width: 100%;
+        border-radius: 4px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .score {
+        text-align: center;
+        font-size: 1.4em;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+      const { useState } = React;
+
+      const quizQuestions = [
+        {
+          question: "What is the capital of France?",
+          options: ["Berlin", "Madrid", "Paris", "Rome"],
+          answer: "Paris",
+        },
+        {
+          question: "Which language is used for web development?",
+          options: ["Python", "JavaScript", "C++", "Java"],
+          answer: "JavaScript",
+        },
+        {
+          question: "What is the value of PI?",
+          options: ["3.14", "2.72", "1.61", "1.41"],
+          answer: "3.14",
+        },
+        {
+          question: "What is the national animal of India?",
+          options: ["Tiger", "Elephant", "Lion", "Peacock"],
+          answer: "Tiger",
+        },
+      ];
+
+      function QuizApp() {
+        const [currentQuestion, setCurrentQuestion] = useState(0);
+        const [score, setScore] = useState(0);
+        const [quizFinished, setQuizFinished] = useState(false);
+        const [selectedAnswer, setSelectedAnswer] = useState("");
+
+        const handleAnswerSelect = (option) => {
+          setSelectedAnswer(option);
+        };
+
+        const handleNextQuestion = () => {
+          if (selectedAnswer === quizQuestions[currentQuestion].answer) {
+            setScore(score + 1);
+          }
+          setSelectedAnswer("");
+          const nextQuestion = currentQuestion + 1;
+          if (nextQuestion < quizQuestions.length) {
+            setCurrentQuestion(nextQuestion);
+          } else {
+            setQuizFinished(true);
+          }
+        };
+
+        return (
+          <div className="quiz-container">
+            {!quizFinished ? (
+              <>
+                <h2>Quiz Application</h2>
+                <div className="question">
+                  {quizQuestions[currentQuestion].question}
+                </div>
+                <ul className="options">
+                  {quizQuestions[currentQuestion].options.map((option, index) => (
+                    <li key={index}>
+                      <input
+                        type="radio"
+                        name="option"
+                        value={option}
+                        onClick={() => handleAnswerSelect(option)}
+                        checked={selectedAnswer === option}
+                      />{" "}
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={handleNextQuestion} disabled={!selectedAnswer}>
+                  {currentQuestion === quizQuestions.length - 1
+                    ? "Finish Quiz"
+                    : "Next Question"}
+                </button>
+              </>
+            ) : (
+              <div className="score">
+                Quiz Completed! Your score is {score}/{quizQuestions.length}.
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      ReactDOM.render(<QuizApp />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
